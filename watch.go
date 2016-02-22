@@ -8,8 +8,6 @@ import (
 	"gopkg.in/fsnotify.v1"
 )
 
-const chmodMask fsnotify.Op = ^fsnotify.Op(0) ^ fsnotify.Chmod
-
 // watch recursively watches changes in root and reports the filenames to names.
 // It sends an error on the done chan.
 // As an optimization, any dirs we encounter that meet the ExcludePrefix criteria of all reflexes can be
@@ -30,7 +28,7 @@ func watch(root string, watcher *fsnotify.Watcher, names chan<- string, done cha
 				continue
 			}
 			path := normalize(e.Name, stat.IsDir())
-			if e.Op&chmodMask == 0 {
+			if e.Op&fsnotify.Chmod > 0 {
 				continue
 			}
 			names <- path
