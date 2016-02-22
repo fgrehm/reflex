@@ -28,9 +28,6 @@ func watch(root string, watcher *fsnotify.Watcher, names chan<- string, done cha
 				continue
 			}
 			path := normalize(e.Name, stat.IsDir())
-			if e.Op&fsnotify.Chmod > 0 {
-				continue
-			}
 			names <- path
 			if e.Op&fsnotify.Create > 0 && stat.IsDir() {
 				if err := filepath.Walk(path, walker(watcher, reflexes)); err != nil {
